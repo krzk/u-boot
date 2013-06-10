@@ -183,6 +183,11 @@ static void reset_usb_phy(struct exynos_usb_phy *usb)
 	set_usbhost_phy_ctrl(POWER_USB_HOST_PHY_CTRL_DISABLE);
 }
 
+inline void __board_usb_init(int value)
+{
+}
+void board_usb_init(int) __attribute__((weak, alias("__board_usb_init")));
+
 /*
  * EHCI-initialization
  * Create the appropriate control structures to manage
@@ -202,7 +207,11 @@ int ehci_hcd_init(int index, struct ehci_hccr **hccr, struct ehci_hcor **hcor)
 	ctx->hcd = (struct ehci_hccr *)samsung_get_base_usb_ehci();
 #endif
 
+	board_usb_init(0);
+
 	setup_usb_phy(ctx->usb);
+
+	board_usb_init(1);
 
 	*hccr = ctx->hcd;
 	*hcor = (struct ehci_hcor *)((uint32_t) *hccr

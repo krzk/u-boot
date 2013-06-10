@@ -24,8 +24,21 @@
 #include <asm/arch/pinmux.h>
 #include <asm/arch/dwmmc.h>
 #include <asm/arch/power.h>
+#include <asm/arch/gpio.h>
 
 DECLARE_GLOBAL_DATA_PTR;
+
+#ifdef CONFIG_USB_EHCI_EXYNOS
+void board_usb_init(int value)
+{
+	struct exynos5_gpio_part1 *gpio = (struct exynos5_gpio_part1 *)
+						samsung_get_base_gpio_part1();
+
+	/* Configure gpios for usb 3503 hub's reset and connect */
+	s5p_gpio_direction_output(&gpio->x3, 5, value);
+	s5p_gpio_direction_output(&gpio->d1, 7, value);
+}
+#endif
 
 int board_init(void)
 {
