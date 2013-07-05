@@ -27,6 +27,8 @@
 
 #include <configs/exynos5250-dt.h>
 
+#define CONFIG_ARNDALE
+
 #undef CONFIG_DEFAULT_DEVICE_TREE
 #define CONFIG_DEFAULT_DEVICE_TREE	exynos5250-arndale
 

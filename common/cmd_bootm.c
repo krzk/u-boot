@@ -527,7 +527,12 @@ static int boot_selected_os(int argc, char * const argv[], int state,
 	if (images->os.os == IH_OS_LINUX)
 		fixup_silent_linux();
 #endif
+#ifdef CONFIG_ARNDALE
+	if (state == BOOTM_STATE_OS_GO)
+		arch_preboot_os();
+#else
 	arch_preboot_os();
+#endif
 	boot_fn(state, argc, argv, images);
 	if (state == BOOTM_STATE_OS_FAKE_GO) /* We expect to return */
 		return 0;
