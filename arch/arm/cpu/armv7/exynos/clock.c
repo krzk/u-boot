@@ -766,12 +766,6 @@ static void exynos5_set_mmc_clk(int dev_index, unsigned int div)
 	unsigned int addr;
 	unsigned int val;
 
-	/*
-	 * CLK_DIV_FSYS1
-	 * MMC0_PRE_RATIO [15:8], MMC1_PRE_RATIO [31:24]
-	 * CLK_DIV_FSYS2
-	 * MMC2_PRE_RATIO [15:8], MMC3_PRE_RATIO [31:24]
-	 */
 	if (dev_index < 2) {
 		addr = (unsigned int)&clk->div_fsys1;
 	} else {
@@ -779,6 +773,25 @@ static void exynos5_set_mmc_clk(int dev_index, unsigned int div)
 		dev_index -= 2;
 	}
 
+	/*
+	   +	 * CLK_DIV_FSYS1
+	   +	 * MMC0_RATIO[3:0], MMC1_RATIO[3:0]
+	   +	 * CLK_DIV_FSYS2
+	   +	 * MMC2_RATIO[3:0], MMC3_RATIO[3:0]
+	   +	 * Bypass the divider ratio and use only pre ratio to select
+	   +	 * the sclk mmc
+	   +	 */
+
+	val = readl(addr);
+	val &= ~(0xf << (dev_index * 16));
+	writel(val, addr);
+
+	/*
+	 * CLK_DIV_FSYS1
+	 * MMC0_PRE_RATIO [15:8], MMC1_PRE_RATIO [31:24]
+	 * CLK_DIV_FSYS2
+	 * MMC2_PRE_RATIO [15:8], MMC3_PRE_RATIO [31:24]
+	 */
 	val = readl(addr);
 	val &= ~(0xff << ((dev_index << 4) + 8));
 	val |= (div & 0xff) << ((dev_index << 4) + 8);
