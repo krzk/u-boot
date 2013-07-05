@@ -501,17 +501,17 @@ static int reserve_lcd(void)
 }
 #endif /* CONFIG_LCD */
 
+#ifdef CONFIG_TRACE
 static int reserve_trace(void)
 {
-#ifdef CONFIG_TRACE
 	gd->relocaddr -= CONFIG_TRACE_BUFFER_SIZE;
 	gd->trace_buff = map_sysmem(gd->relocaddr, CONFIG_TRACE_BUFFER_SIZE);
 	debug("Reserving %dk for trace data at: %08lx\n",
 	      CONFIG_TRACE_BUFFER_SIZE >> 10, gd->relocaddr);
-#endif
 
 	return 0;
 }
+#endif
 
 #if defined(CONFIG_VIDEO) && (!defined(CONFIG_PPC) || defined(CONFIG_8xx)) \
 		&& !defined(CONFIG_ARM) && !defined(CONFIG_X86)
@@ -833,7 +833,9 @@ static init_fnc_t init_sequence_f[] = {
 #endif
 	setup_mon_len,
 	setup_fdt,
+#ifdef CONFIG_TRACE
 	trace_early_init,
+#endif
 #if defined(CONFIG_MPC85xx) || defined(CONFIG_MPC86xx)
 	/* TODO: can this go into arch_cpu_init()? */
 	probecpu,
@@ -977,7 +979,9 @@ static init_fnc_t init_sequence_f[] = {
 #ifdef CONFIG_LCD
 	reserve_lcd,
 #endif
+#ifdef CONFIG_TRACE
 	reserve_trace,
+#endif
 	/* TODO: Why the dependency on CONFIG_8xx? */
 #if defined(CONFIG_VIDEO) && (!defined(CONFIG_PPC) || defined(CONFIG_8xx)) \
 		&& !defined(CONFIG_ARM) && !defined(CONFIG_X86)
