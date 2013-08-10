@@ -65,7 +65,7 @@
 
 #define __deprecated			__attribute__((deprecated))
 #ifndef __packed
-#define __packed			__attribute__((packed))
+# define __packed			__attribute__((packed))
 #endif
 #ifndef __weak
 #define __weak				__attribute__((weak))
@@ -96,10 +96,10 @@
  * [...]
  */
 #ifndef __pure
-#define __pure				__attribute__((pure))
+# define __pure				__attribute__((pure))
 #endif
 #ifndef __aligned
-#define __aligned(x)			__attribute__((aligned(x)))
+# define __aligned(x)			__attribute__((aligned(x)))
 #endif
 #define __printf(a, b)			__attribute__((format(printf, a, b)))
 #define __scanf(a, b)			__attribute__((format(scanf, a, b)))
