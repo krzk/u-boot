@@ -12,9 +12,6 @@
 #define __used			__attribute__((__used__))
 #define __must_check 		__attribute__((warn_unused_result))
 #define __compiler_offsetof(a,b) __builtin_offsetof(a,b)
-#ifndef __always_inline
-# define __always_inline		inline __attribute__((always_inline))
-#endif
 
 #if GCC_VERSION >= 40100 && GCC_VERSION < 40600
 # define __compiletime_object_size(obj) __builtin_object_size(obj, 0)
