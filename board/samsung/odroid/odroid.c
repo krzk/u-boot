@@ -57,7 +57,7 @@ void set_board_type(void)
 
 const char *get_board_type(void)
 {
-	const char *board_type[] = {"u3", "x2"};
+	const char *board_type[] = {"u3", "x"};
 
 	return board_type[gd->board_type];
 }
