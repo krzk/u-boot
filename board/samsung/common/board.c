@@ -287,7 +287,7 @@ int board_mmc_init(bd_t *bis)
 }
 #endif
 
-#ifdef CONFIG_DISPLAY_BOARDINFO
+#if defined(CONFIG_DISPLAY_BOARDINFO) || defined(CONFIG_DISPLAY_BOARDINFO_LATE)
 int checkboard(void)
 {
 	const char *board_info;
