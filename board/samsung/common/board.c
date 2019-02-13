@@ -295,6 +295,8 @@ int checkboard(void)
 	board_info = fdt_getprop(gd->fdt_blob, 0, "model", NULL);
 	printf("Board: %s\n", board_info ? board_info : "unknown");
 #ifdef CONFIG_BOARD_TYPES
+	/* Printing type requires having revision */
+	set_board_revision();
 	board_info = get_board_type();
 	if (board_info)
 		printf("Type:  %s\n", board_info);
@@ -325,6 +327,12 @@ int board_late_init(void)
 #ifdef CONFIG_MISC_INIT_R
 int misc_init_r(void)
 {
+	/*
+	 * At this point regulators should be available so do full
+	 * revision detection
+	 */
+	set_board_revision();
+
 #ifdef CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG
 	set_board_info();
 #endif

@@ -34,6 +34,7 @@ char *get_dfu_alt_boot(char *interface, char *devstr);
 #endif
 #ifdef CONFIG_BOARD_TYPES
 void set_board_type(void);
+void set_board_revision(void);
 const char *get_board_type(void);
 #endif
 
