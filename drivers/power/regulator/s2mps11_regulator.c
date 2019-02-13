@@ -551,7 +551,14 @@ static int ldo_get_enable(struct udevice *dev)
 
 static int ldo_set_enable(struct udevice *dev, bool enable)
 {
-	return s2mps11_ldo_enable(dev, PMIC_OP_SET, &enable);
+	int ret;
+
+	ret = s2mps11_ldo_enable(dev, PMIC_OP_SET, &enable);
+
+	/* Wait the "enable delay" for voltage to start to rise */
+	udelay(15);
+
+	return ret;
 }
 
 static int ldo_get_mode(struct udevice *dev)
