@@ -20,6 +20,7 @@ dtb-$(CONFIG_EXYNOS5) += exynos5250-arndale.dtb \
 	exynos5250-snow.dtb \
 	exynos5250-spring.dtb \
 	exynos5250-smdk5250.dtb \
+	exynos5420-arndale-octa.dtb \
 	exynos5420-smdk5420.dtb \
 	exynos5420-peach-pit.dtb \
 	exynos5800-peach-pi.dtb \
