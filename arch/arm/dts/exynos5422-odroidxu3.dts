@@ -272,7 +272,7 @@
 	};
 
 	ehci@12110000 {
-		samsung,vbus-gpio = <&gpx2 6 GPIO_ACTIVE_HIGH>;
+		status = "okay";
 	};
 
 	serial@12C20000 {
