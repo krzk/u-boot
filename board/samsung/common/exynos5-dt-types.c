@@ -249,10 +249,6 @@ void set_board_type(void)
  */
 void set_board_revision(void)
 {
-	/* Do not detect revision twice */
-	if (gd->board_type == EXYNOS5_BOARD_GENERIC)
-		return;
-
 	if (board_is_odroidxu3())
 		gd->board_type = odroid_get_board_type();
 }
