@@ -1,6 +1,7 @@
 ARNDALE BOARD
-M:	Chander Kashyap <k.chander@samsung.com>
-S:	Maintained
+M:	Krzysztof Kozlowski <krzk@kernel.org>
+M:	Marek Szyprowski <m.szyprowski@samsung.com>
+S:	Odd Fixes
 F:	board/samsung/arndale/
 F:	include/configs/arndale.h
 F:	configs/arndale_defconfig
