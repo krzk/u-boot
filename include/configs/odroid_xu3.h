@@ -88,9 +88,6 @@
 #define CONFIG_ODROID_REV_AIN		9
 #define CONFIG_REVISION_TAG
 
-#undef CONFIG_SYS_BOARD
-#define CONFIG_SYS_BOARD	"odroid"
-
 /* Define new extra env settings, including DFU settings */
 #undef CONFIG_EXTRA_ENV_SETTINGS
 #define CONFIG_EXTRA_ENV_SETTINGS \
@@ -102,6 +99,7 @@
 	"console=" CONFIG_DEFAULT_CONSOLE \
 	"fdtfile=exynos5422-odroidxu3.dtb\0" \
 	"boardname=odroidxu3\0" \
+	"board=odroidxu3\0" \
 	"mmcbootdev=0\0" \
 	"mmcrootdev=0\0" \
 	"mmcbootpart=1\0" \
