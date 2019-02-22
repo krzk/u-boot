@@ -34,6 +34,7 @@ struct exynos5_type_info exynos5_info[] = {
 	[EXYNOS5_BOARD_ODROID_HC1_REV01] = { "hc1" },
 	[EXYNOS5_BOARD_ODROID_HC2_REV01] = { "hc1" },
 	[EXYNOS5_BOARD_ODROID_UNKNOWN] = { "unknown" },
+	[EXYNOS5_BOARD_ARNDALE_OCTA] = { "arndale octa" },
 };
 
 /**
