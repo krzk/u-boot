@@ -18,9 +18,22 @@
 DECLARE_GLOBAL_DATA_PTR;
 
 static const struct udevice_id board_ids[] = {
+	{ .compatible = "insignal,arndale-octa", .data = EXYNOS5_BOARD_ARNDALE_OCTA },
 	{ .compatible = "samsung,odroidxu3", .data = EXYNOS5_BOARD_ODROID_XU3 },
 	{ .compatible = "samsung,exynos5", .data = EXYNOS5_BOARD_GENERIC },
 	{ },
+};
+
+/* Matches enum with board types */
+struct exynos5_type_info exynos5_info[] = {
+	[EXYNOS5_BOARD_GENERIC] = { "" },
+	[EXYNOS5_BOARD_ODROID_XU3] = { "xu3" },
+	[EXYNOS5_BOARD_ODROID_XU3_REV01] = { "xu3" },
+	[EXYNOS5_BOARD_ODROID_XU3_REV02] = { "xu3" },
+	[EXYNOS5_BOARD_ODROID_XU4_REV01] = { "xu4" },
+	[EXYNOS5_BOARD_ODROID_HC1_REV01] = { "hc1" },
+	[EXYNOS5_BOARD_ODROID_HC2_REV01] = { "hc1" },
+	[EXYNOS5_BOARD_ODROID_UNKNOWN] = { "unknown" },
 };
 
 /**
@@ -37,12 +50,12 @@ static const struct udevice_id board_ids[] = {
  * the measured ADC value is lower than then ADCmax from the array.
  */
 struct odroid_rev_info odroid_info[] = {
-	{ EXYNOS5_BOARD_ODROID_XU3_REV01, 1, 10, "xu3" },
-	{ EXYNOS5_BOARD_ODROID_XU3_REV02, 2, 375, "xu3" },
-	{ EXYNOS5_BOARD_ODROID_XU4_REV01, 1, 1293, "xu4" },
-	{ EXYNOS5_BOARD_ODROID_HC1_REV01, 1, 1322, "hc1" },
-	{ EXYNOS5_BOARD_ODROID_HC2_REV01, 1, 1484, "hc1" },
-	{ EXYNOS5_BOARD_ODROID_UNKNOWN, 0, 4095, "unknown" },
+	{ EXYNOS5_BOARD_ODROID_XU3_REV01, 1, 10 },
+	{ EXYNOS5_BOARD_ODROID_XU3_REV02, 2, 375 },
+	{ EXYNOS5_BOARD_ODROID_XU4_REV01, 1, 1293 },
+	{ EXYNOS5_BOARD_ODROID_HC1_REV01, 1, 1322 },
+	{ EXYNOS5_BOARD_ODROID_HC2_REV01, 1, 1484 },
+	{ EXYNOS5_BOARD_ODROID_UNKNOWN, 0, 4095 },
 };
 
 static unsigned int odroid_get_rev(void)
@@ -113,18 +126,20 @@ rev_default:
 }
 
 /**
- * odroid_get_type_str - returns pointer to one of the board type string.
+ * exynos5_get_type_str - returns pointer to one of the board type string.
  * Board types: "xu3", "xu3-lite", "xu4". However the "xu3lite" can be
  * detected only when the i2c controller is ready to use. Fortunately,
  * XU3 and XU3L are compatible, and the information about board lite
  * revision is needed before booting the linux, to set proper environment
  * variable: $fdtfile.
  */
-static const char *odroid_get_type_str(void)
+static const char *exynos5_get_type_str(void)
 {
 	const char *type_xu3l = "xu3-lite";
 	struct udevice *dev, *chip;
-	int i, ret;
+	int ret;
+
+	BUILD_BUG_ON(ARRAY_SIZE(exynos5_info) != EXYNOS5_BOARD_COUNT);
 
 	if (gd->board_type != EXYNOS5_BOARD_ODROID_XU3_REV02)
 		goto exit;
@@ -149,12 +164,7 @@ static const char *odroid_get_type_str(void)
 		return type_xu3l;
 
 exit:
-	for (i = 0; i < ARRAY_SIZE(odroid_info); i++) {
-		if (odroid_info[i].board_type == gd->board_type)
-			return odroid_info[i].name;
-	}
-
-	return NULL;
+	return exynos5_info[gd->board_type].name;
 }
 
 bool board_is_odroidxu3(void)
@@ -190,9 +200,12 @@ bool board_is_odroidhc2(void)
 	return false;
 }
 
-bool board_is_generic(void)
+bool board_is_odroid(void)
 {
-	if (gd->board_type == EXYNOS5_BOARD_GENERIC)
+	BUILD_BUG_ON(EXYNOS5_BOARD_ODROID_XU3 >= EXYNOS5_BOARD_ODROID_UNKNOWN);
+
+	if (gd->board_type >= EXYNOS5_BOARD_ODROID_XU3 &&
+	    gd->board_type <= EXYNOS5_BOARD_ODROID_UNKNOWN)
 		return true;
 
 	return false;
@@ -205,7 +218,7 @@ bool board_is_generic(void)
  */
 u32 get_board_rev(void)
 {
-	if (board_is_generic())
+	if (!board_is_odroid())
 		return 0;
 
 	return odroid_get_rev();
@@ -218,12 +231,7 @@ u32 get_board_rev(void)
  */
 const char *get_board_type(void)
 {
-	const char *generic = "";
-
-	if (board_is_generic())
-		return generic;
-
-	return odroid_get_type_str();
+	return exynos5_get_type_str();
 }
 
 /**
