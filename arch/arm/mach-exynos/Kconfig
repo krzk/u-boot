@@ -94,6 +94,10 @@ config TARGET_ODROID_XU3
 	bool "Exynos5422 Odroid board"
 	select OF_CONTROL
 
+config TARGET_ARNDALE_OCTA
+	bool "Exynos5420 Arndale Octa board"
+	select OF_CONTROL
+
 config TARGET_ARNDALE
 	bool "Exynos5250 Arndale board"
 	select ARM_ERRATA_773022
