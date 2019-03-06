@@ -334,7 +334,8 @@ int board_late_init(void)
 #ifdef CONFIG_MISC_INIT_R
 int misc_init_r(void)
 {
-	if (!IS_ENABLED(CONFIG_DISPLAY_BOARDINFO_LATE)) {
+	if (IS_ENABLED(CONFIG_BOARD_TYPES) &&
+	    !IS_ENABLED(CONFIG_DISPLAY_BOARDINFO_LATE)) {
 		/*
 		 * If revision was not set by late display boardinfo,
 		 * set it here. At this point regulators should be already
