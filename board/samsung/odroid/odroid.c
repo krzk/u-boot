@@ -30,6 +30,7 @@ DECLARE_GLOBAL_DATA_PTR;
 enum {
 	ODROID_TYPE_U3,
 	ODROID_TYPE_X2,
+	ODROID_TYPE_X,
 	ODROID_TYPES,
 };
 
@@ -49,15 +50,20 @@ void set_board_type(void)
 	sdelay(200000);
 
 	/* Check GPC1 pin2 - LED supplied by XCL205 - X2 only */
-	if (readl(XCL205_STATE_GPIO_DAT) & (1 << XCL205_STATE_GPIO_PIN))
-		gd->board_type = ODROID_TYPE_X2;
-	else
+	if (readl(XCL205_STATE_GPIO_DAT) & (1 << XCL205_STATE_GPIO_PIN)) {
+		/* Check the SoC product information ID */
+		if (readl(EXYNOS4_PRO_ID) == 0xE4412211)
+			gd->board_type = ODROID_TYPE_X;
+		else
+			gd->board_type = ODROID_TYPE_X2;
+	} else {
 		gd->board_type = ODROID_TYPE_U3;
+	}
 }
 
 const char *get_board_type(void)
 {
-	const char *board_type[] = {"u3", "x2"};
+	const char *board_type[] = {"u3", "x2", "x"};
 
 	return board_type[gd->board_type];
 }
