@@ -76,6 +76,17 @@ static void boot_temp_check(void)
 }
 #endif
 
+static u32 get_sdram_banks(void)
+{
+	u32 nr_dram_banks = CONFIG_NR_DRAM_BANKS;
+#ifdef CONFIG_BOARD_TYPES
+	if (strcmp(CONFIG_SYS_BOARD, "odroid") == 0 &&
+	    strcmp(get_board_type(), "x") == 0)
+		nr_dram_banks = SDRAM_BANKS_ODROIDX;
+#endif
+	return nr_dram_banks;
+}
+
 int board_init(void)
 {
 	gd->bd->bi_boot_params = (PHYS_SDRAM_1 + 0x100UL);
@@ -87,35 +98,26 @@ int board_init(void)
 	boot_temp_check();
 #endif
 #ifdef CONFIG_TZSW_RESERVED_DRAM_SIZE
+	u32 nr_dram_banks = get_sdram_banks();
+
 	/* The last few MB of memory can be reserved for secure firmware */
 	ulong size = CONFIG_TZSW_RESERVED_DRAM_SIZE;
 
 	gd->ram_size -= size;
-	gd->bd->bi_dram[CONFIG_NR_DRAM_BANKS - 1].size -= size;
+	gd->bd->bi_dram[nr_dram_banks - 1].size -= size;
 #endif
 	return exynos_init();
-}
-
-static u32 get_sdram_bank_size(void)
-{
-	u32 sdram_bank_size = SDRAM_BANK_SIZE;
-#ifdef CONFIG_BOARD_TYPES
-	if (strcmp(CONFIG_SYS_BOARD, "odroid") == 0 &&
-	    strcmp(get_board_type(), "x") == 0)
-		sdram_bank_size = SDRAM_BANK_SIZE_ODROIDX;
-#endif
-	return sdram_bank_size;
 }
 
 int dram_init(void)
 {
 	unsigned int i;
 	unsigned long addr;
-	u32 sdram_bank_size = get_sdram_bank_size();
+	u32 nr_dram_banks = get_sdram_banks();
 
-	for (i = 0; i < CONFIG_NR_DRAM_BANKS; i++) {
-		addr = CONFIG_SYS_SDRAM_BASE + (i * sdram_bank_size);
-		gd->ram_size += get_ram_size((long *)addr, sdram_bank_size);
+	for (i = 0; i < nr_dram_banks; i++) {
+		addr = CONFIG_SYS_SDRAM_BASE + (i * SDRAM_BANK_SIZE);
+		gd->ram_size += get_ram_size((long *)addr, SDRAM_BANK_SIZE);
 	}
 	return 0;
 }
@@ -124,11 +126,11 @@ void dram_init_banksize(void)
 {
 	unsigned int i;
 	unsigned long addr, size;
-	u32 sdram_bank_size = get_sdram_bank_size();
+	u32 nr_dram_banks = get_sdram_banks();
 
-	for (i = 0; i < CONFIG_NR_DRAM_BANKS; i++) {
-		addr = CONFIG_SYS_SDRAM_BASE + (i * sdram_bank_size);
-		size = get_ram_size((long *)addr, sdram_bank_size);
+	for (i = 0; i < nr_dram_banks; i++) {
+		addr = CONFIG_SYS_SDRAM_BASE + (i * SDRAM_BANK_SIZE);
+		size = get_ram_size((long *)addr, SDRAM_BANK_SIZE);
 
 		gd->bd->bi_dram[i].start = addr;
 		gd->bd->bi_dram[i].size = size;
