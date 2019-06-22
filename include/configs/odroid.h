@@ -25,10 +25,10 @@
 
 #define CONFIG_MACH_TYPE	4289
 
-#define CONFIG_NR_DRAM_BANKS	1
+#define CONFIG_NR_DRAM_BANKS	8
+#define SDRAM_BANKS_ODROIDX	4
 #define CONFIG_SYS_SDRAM_BASE	0x40000000
-#define SDRAM_BANK_SIZE		((8 * 256) << 20)	/* 8 * 256 MB */
-#define SDRAM_BANK_SIZE_ODROIDX	((4 * 256) << 20)	/* 4 * 256 MB */
+#define SDRAM_BANK_SIZE		(256 << 20)	/* 256 MB */
 #define PHYS_SDRAM_1		CONFIG_SYS_SDRAM_BASE
 /* Reserve the last 1 MiB for the secure firmware */
 #define CONFIG_SYS_MEM_TOP_HIDE		(1UL << 20UL)
