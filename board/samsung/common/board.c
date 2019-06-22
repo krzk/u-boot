@@ -92,14 +92,26 @@ int board_init(void)
 	return exynos_init();
 }
 
+static u32 get_sdram_bank_size(void)
+{
+	u32 sdram_bank_size = SDRAM_BANK_SIZE;
+#ifdef CONFIG_BOARD_TYPES
+	if (strcmp(CONFIG_SYS_BOARD, "odroid") == 0 &&
+	    strcmp(get_board_type(), "x") == 0)
+		sdram_bank_size = SDRAM_BANK_SIZE_ODROIDX;
+#endif
+	return sdram_bank_size;
+}
+
 int dram_init(void)
 {
 	unsigned int i;
 	u32 addr;
+	u32 sdram_bank_size = get_sdram_bank_size();
 
 	for (i = 0; i < CONFIG_NR_DRAM_BANKS; i++) {
-		addr = CONFIG_SYS_SDRAM_BASE + (i * SDRAM_BANK_SIZE);
-		gd->ram_size += get_ram_size((long *)addr, SDRAM_BANK_SIZE);
+		addr = CONFIG_SYS_SDRAM_BASE + (i * sdram_bank_size);
+		gd->ram_size += get_ram_size((long *)addr, sdram_bank_size);
 	}
 	return 0;
 }
@@ -108,10 +120,11 @@ void dram_init_banksize(void)
 {
 	unsigned int i;
 	u32 addr, size;
+	u32 sdram_bank_size = get_sdram_bank_size();
 
 	for (i = 0; i < CONFIG_NR_DRAM_BANKS; i++) {
-		addr = CONFIG_SYS_SDRAM_BASE + (i * SDRAM_BANK_SIZE);
-		size = get_ram_size((long *)addr, SDRAM_BANK_SIZE);
+		addr = CONFIG_SYS_SDRAM_BASE + (i * sdram_bank_size);
+		size = get_ram_size((long *)addr, sdram_bank_size);
 
 		gd->bd->bi_dram[i].start = addr;
 		gd->bd->bi_dram[i].size = size;
