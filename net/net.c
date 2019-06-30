@@ -1362,6 +1362,23 @@ void net_set_ip_header(uchar *pkt, IPaddr_t dest, IPaddr_t source)
 	/* IP_HDR_SIZE / 4 (not including UDP) */
 	ip->ip_hl_v  = 0x45;
 	ip->ip_tos   = 0;
+	/*
+	 * Workaround for data-abort on Odroid X.
+	 * I have no clue what is the real problem and I do not want to
+	 * spend more time on this shit.
+	 * This fixes (hides):
+	 * Waiting for Ethernet connection... done.
+	 * Using sms0 device
+	 * data abort
+	 * pc : [<7fe8db00>]          lr : [<7fe8e330>]
+	 * reloc pc : [<43e49b00>]    lr : [<43e4a330>]
+	 * sp : 7ae3d720  ip : 00000000     fp : 7fe53a78
+	 * r10: 00000002  r9 : 7ae41eb0     r8 : 7feefbf4
+	 * r7 : 00000001  r6 : 00000000     r5 : 0000002a  r4 : 7feeddee
+	 * r3 : 14000045  r2 : 1101a8c0     r1 : 0101a8c0  r0 : 7feeddee
+	 * Flags: nZCv  IRQs off  FIQs off  Mode SVC_32
+	 */
+	udelay(1);
 	ip->ip_len   = htons(IP_HDR_SIZE);
 	ip->ip_id    = htons(NetIPID++);
 	ip->ip_off   = htons(IP_FLAGS_DFRAG);	/* Don't fragment */
